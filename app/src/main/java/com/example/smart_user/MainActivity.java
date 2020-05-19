@@ -22,8 +22,6 @@ public class MainActivity extends AppCompatActivity {
         private TextInputLayout passwordTextInputLayout,emailTextInputLayout;
         private TextInputEditText emailEditText, passwordEditText;
 
-
-
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
