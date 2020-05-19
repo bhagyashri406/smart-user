@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         private static final String TAG = MainActivity.class.getSimpleName();
         private Button facebookLoginButton, googleLoginButton, customSigninButton, logoutButton;
         private View customSignupButton;
-        private TextInputLayout passwordTextInputLayout,emailTextInputLayout;
+        private TextInputLayout passwordTextInputLayout, emailTextInputLayout;
         private TextInputEditText emailEditText, passwordEditText;
 
 
