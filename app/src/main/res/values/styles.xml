@@ -23,7 +23,7 @@
         </item>
     </style>
 
-    <style name="TextLabel" parent="TextAppearance.AppCompat">
+    <style name="TextLabel" parent="Theme.AppCompat.Light.NoActionBar">
         <!--hint color And Label Color in False State-->
         <item name="android:textColorHint">@color/grey_100</item>
         <item name="android:textSize">16sp</item>
