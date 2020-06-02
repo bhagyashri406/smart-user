@@ -2,7 +2,7 @@ package com.example.smart_user.model;
 
 public class SignUpResponse {
 
-    private String message = "";
+    private String message;
 
     public String getMessage() {
         return message;

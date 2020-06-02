@@ -3,6 +3,8 @@ package com.example.smart_user;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.content.Intent;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.smart_user.api.Api;
+import com.example.smart_user.config.Config;
 import com.example.smart_user.model.SignInResponse;
 import com.example.smart_user.model.SignUpResponse;
 import com.example.smart_user.model.User;
@@ -30,13 +33,24 @@ public class MainActivity extends AppCompatActivity {
     private TextView customSignupButton;
     private TextInputLayout passwordTextInputLayout, emailTextInputLayout;
     private TextInputEditText emailEditText, passwordEditText;
-    private boolean signUp =false ;
-    private String signUpText= "No account yet? Create one";
-    private String signInText= "Already Account do SignIn";
+    private boolean signUp = false;
+    SharedPreferences sharedpreferences;
+    SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sharedpreferences = getSharedPreferences(Config.MyPREFERENCES, Context.MODE_PRIVATE);
+        editor = sharedpreferences.edit();
+
+        if (!sharedpreferences.getString(Config.TOKEN, "").isEmpty()) {
+            Intent intent = new Intent(getBaseContext(), UserProfile.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+
+        }
         bindViews();
         setListeners();
 
@@ -52,31 +66,34 @@ public class MainActivity extends AppCompatActivity {
 
     private void refreshLayout() {
 
-        boolean x = false;
-        if (x) {
-            Log.d(TAG, "Logged in user: " + "");
-            facebookLoginButton.setVisibility(View.GONE);
-            googleLoginButton.setVisibility(View.GONE);
-            customSigninButton.setVisibility(View.GONE);
-            customSignupButton.setVisibility(View.GONE);
-            emailTextInputLayout.setVisibility(View.GONE);
-            passwordTextInputLayout.setVisibility(View.GONE);
-            logoutButton.setVisibility(View.VISIBLE);
+//        boolean x = false;
+//        if (x) {
+//            Log.d(TAG, "Logged in user: " + "");
+//            facebookLoginButton.setVisibility(View.GONE);
+//            googleLoginButton.setVisibility(View.GONE);
+//            customSigninButton.setVisibility(View.GONE);
+//            customSignupButton.setVisibility(View.GONE);
+//            emailTextInputLayout.setVisibility(View.GONE);
+//            passwordTextInputLayout.setVisibility(View.GONE);
+//            logoutButton.setVisibility(View.VISIBLE);
+//
+//            signUp = false;
+//            customSigninButton.setText(Config.signIN);
+//            customSignupButton.setText(Config.signUpText);
+//        } else {
+        facebookLoginButton.setVisibility(View.VISIBLE);
+        googleLoginButton.setVisibility(View.VISIBLE);
+        customSigninButton.setVisibility(View.VISIBLE);
+        customSignupButton.setVisibility(View.VISIBLE);
+        passwordTextInputLayout.setVisibility(View.VISIBLE);
+        emailTextInputLayout.setVisibility(View.VISIBLE);
+        logoutButton.setVisibility(View.GONE);
 
-             signUp =false ;
-            customSigninButton.setText("Sign In");
-            customSignupButton.setText(signUpText);
-        } else {
-            facebookLoginButton.setVisibility(View.VISIBLE);
-            googleLoginButton.setVisibility(View.VISIBLE);
-            customSigninButton.setVisibility(View.VISIBLE);
-            customSignupButton.setVisibility(View.VISIBLE);
-            passwordTextInputLayout.setVisibility(View.VISIBLE);
-            emailTextInputLayout.setVisibility(View.VISIBLE);
-            logoutButton.setVisibility(View.GONE);
+        signUp = false;
+        customSigninButton.setText(Config.signIN);
+        customSignupButton.setText(Config.signUpText);
 
-
-        }
+//        }
     }
 
     @Override
@@ -104,12 +121,15 @@ public class MainActivity extends AppCompatActivity {
         customSigninButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                passwordEditText.setError(null);
+                emailEditText.setError(null);
 
-                if(signUp){
-                signUp();
-                }else {
-                signIn();
-                }
+                if (isEmailValid(emailEditText.getText().toString().trim()) && isValidPassword(passwordEditText.getText().toString().trim()))
+                    if (signUp) {
+                        signUp();
+                    } else {
+                        signIn();
+                    }
 
             }
         });
@@ -119,17 +139,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Perform custom sign up
                 Log.d(TAG, "Called signup button");
-                signUp = !signUp ;
+                signUp = !signUp;
 
-                if(signUp) {
-                    customSigninButton.setText("Sign Up");
-                    customSignupButton.setText(signInText);
-                }else{
-                    customSigninButton.setText("Sign In");
-                    customSignupButton.setText(signUpText);
+                if (signUp) {
+                    customSigninButton.setText(Config.signUP);
+                    customSignupButton.setText(Config.signInText);
+                } else {
+                    customSigninButton.setText(Config.signIN);
+                    customSignupButton.setText(Config.signUpText);
                 }
-
-
 
 
             }
@@ -146,22 +164,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void bindViews() {
-        facebookLoginButton = (Button) findViewById(R.id.facebook_login_button);
-        googleLoginButton = (Button) findViewById(R.id.google_login_button);
-        customSigninButton = (Button) findViewById(R.id.custom_signin_button);
-        customSignupButton =(TextView)findViewById(R.id.custom_signup_button);
-        emailEditText = (TextInputEditText) findViewById(R.id.email_edittext);
-        passwordTextInputLayout = (TextInputLayout) findViewById(R.id.password_text_input_layout);
-        emailTextInputLayout = (TextInputLayout) findViewById(R.id.email_text_input_layout);
-        passwordEditText = (TextInputEditText) findViewById(R.id.password_edittext);
-        logoutButton = (Button) findViewById(R.id.logout_button);
+        facebookLoginButton = findViewById(R.id.facebook_login_button);
+        googleLoginButton = findViewById(R.id.google_login_button);
+        customSigninButton = findViewById(R.id.custom_signin_button);
+        customSignupButton = findViewById(R.id.custom_signup_button);
+        emailEditText = findViewById(R.id.email_edittext);
+        passwordTextInputLayout = findViewById(R.id.password_text_input_layout);
+        emailTextInputLayout = findViewById(R.id.email_text_input_layout);
+        passwordEditText = findViewById(R.id.password_edittext);
+        logoutButton = findViewById(R.id.logout_button);
     }
 
     private void signUp() {
         // display a progress dialog
         final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setCancelable(false); // set cancelable to false
-        progressDialog.setMessage("Please Wait"); // set message
+        progressDialog.setMessage(Config.pleaseWait); // set message
         progressDialog.show(); // show progress dialog
 
         // Api is a class in which we define a method getClient() that returns the API Interface class object
@@ -179,41 +197,19 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("response -", call.request().method());
                 progressDialog.dismiss();
 
-
                 if (response.code() == 200 || response.code() == 202 || response.isSuccessful()) {
                     Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     passwordEditText.setError(null);
                     emailEditText.setError(null);
-                } else if (response.code() == 400) {
-                    if (isEmailValid(emailEditText.getText().toString().trim()) && passwordEditText.getText().length() >= 8 && passwordEditText.getText().length() <= 12) {
-                        Toast.makeText(MainActivity.this, "Please enter valid Email address or password" + response.raw().message(), Toast.LENGTH_SHORT).show();
+                } else {
 
-                    } else {
-                        if (isEmailValid(emailEditText.getText().toString().trim())) {
-                            passwordEditText.setError("enter valid password");
-                            Toast.makeText(MainActivity.this, "Please enter valid password" + response.raw().message(), Toast.LENGTH_SHORT).show();
-
-                        } else if (passwordEditText.getText().length() >= 8 && passwordEditText.getText().length() <= 12) {
-                            emailEditText.setError("enter valid email address");
-                            Toast.makeText(MainActivity.this, "Please enter valid Email address" + response.raw().message(), Toast.LENGTH_SHORT).show();
-
-
-                        } else {
-                            emailEditText.setError("enter valid email address");
-                            passwordEditText.setError("enter valid password");
-
-                            Toast.makeText(MainActivity.this, "Please enter valid Email address or password" + response.raw().message(), Toast.LENGTH_SHORT).show();
-
-                        }
-
-
-                    }
-
-                } else if (response.code() == 500) {
-                    Toast.makeText(MainActivity.this, "User Already exist by this emailId", Toast.LENGTH_SHORT).show();
-                    emailEditText.setError("Enter a different email address");
-                    passwordEditText.setError(null);
+//                    if (response.code() == 400) {
+                    Toast.makeText(MainActivity.this, Config.validEmailOrPassword + response.raw().message(), Toast.LENGTH_SHORT).show();
                 }
+
+//                else if (response.code() == 500) {
+//                    Toast.makeText(MainActivity.this, "User Already exist by this emailId", Toast.LENGTH_SHORT).show();
+//                }
 
 
             }
@@ -234,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
         // display a progress dialog
         final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setCancelable(false); // set cancelable to false
-        progressDialog.setMessage("Please Wait"); // set message
+        progressDialog.setMessage(Config.pleaseWait); // set message
         progressDialog.show(); // show progress dialog
 
         // Api is a class in which we define a method getClient() that returns the API Interface class object
@@ -254,45 +250,29 @@ public class MainActivity extends AppCompatActivity {
 
 
                 if (response.code() == 200 || response.code() == 202 || response.isSuccessful()) {
-                    Toast.makeText(MainActivity.this, response.body().token, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, response.body().getToken(), Toast.LENGTH_SHORT).show();
+
+                    editor.putString(Config.TOKEN, response.body().getToken());
+                    editor.putString(Config.USER_ID, response.body().getUserId());
+                    editor.commit();
                     passwordEditText.setError(null);
                     emailEditText.setError(null);
-                } else if (response.code() == 401 || response.code() == 400) {
-                    if (isEmailValid(emailEditText.getText().toString().trim()) && passwordEditText.getText().length() >= 8 && passwordEditText.getText().length() <= 12) {
-                        Toast.makeText(MainActivity.this, "Please enter valid Email address or password" + response.raw().message(), Toast.LENGTH_SHORT).show();
 
-                    } else {
-                        if (isEmailValid(emailEditText.getText().toString().trim())) {
-                            passwordEditText.setError("enter valid password");
-                            Toast.makeText(MainActivity.this,  response.raw().message(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getBaseContext(), UserProfile.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
 
-                        } else if (passwordEditText.getText().length() >= 8 && passwordEditText.getText().length() <= 12) {
-                            emailEditText.setError("enter valid email address");
-                            Toast.makeText(MainActivity.this,  response.raw().message(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, Config.Unauthorized, Toast.LENGTH_SHORT).show();
 
-
-                        } else {
-                            emailEditText.setError("enter valid email address");
-                            passwordEditText.setError("enter valid password");
-
-                            Toast.makeText(MainActivity.this,  response.raw().message(), Toast.LENGTH_SHORT).show();
-
-                        }
-
-
-                    }
-
-                } else if (response.code() == 500) {
-                    Toast.makeText(MainActivity.this, response.raw().message(), Toast.LENGTH_SHORT).show();
-                    passwordEditText.setError(null);
                 }
-
-
             }
 
             @Override
             public void onFailure(Call<SignInResponse> call, Throwable t) {
                 Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
             }
 
         });
@@ -301,6 +281,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     boolean isEmailValid(CharSequence email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+
+        Boolean valid = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        if (valid) {
+            return true;
+        } else {
+            emailEditText.setError(Config.validEmail);
+            return false;
+        }
+
+    }
+
+    boolean isValidPassword(CharSequence password) {
+
+        if (password.length() >= 8 && password.length() <= 12) {
+            return true;
+        } else {
+            passwordEditText.setError(Config.validPassword);
+            return false;
+        }
+
     }
 }

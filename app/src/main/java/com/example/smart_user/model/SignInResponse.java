@@ -5,7 +5,8 @@ import androidx.annotation.NonNull;
 public class SignInResponse {
 
 
-    public String token ="" ;
+    private String token = "";
+    private String userId;
 
     public String getToken() {
         return token;
@@ -13,6 +14,14 @@ public class SignInResponse {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
 }

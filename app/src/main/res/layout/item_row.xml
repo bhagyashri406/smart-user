@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardElevation="8dp"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:background="@drawable/ic_backgraund"
+            android:layout_height="wrap_content"></ImageView>
+
+        <TextView
+            android:id="@+id/tvItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_horizontal_margin"
+            android:text="Item X" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:weightSum="3"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight=".8">
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:background="@drawable/icons_like"
+                    android:layout_margin="5dp"
+                    android:layout_height="14dp"></ImageView>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Like"
+                    android:textSize="14dp"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="left"
+                    android:layout_weight="1"></TextView>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1.1">
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/icon_comments"
+                    android:layout_height="14dp"></ImageView>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Comment"
+                    android:textSize="14dp"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="left"
+                    android:layout_weight="1"></TextView>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1.1">
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/icons_share"
+                    android:layout_height="14dp"></ImageView>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_height="wrap_content"
+                    android:text="Share"
+                    android:textSize="14dp"
+                    android:gravity="left"
+                    android:layout_weight="1"></TextView>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>
